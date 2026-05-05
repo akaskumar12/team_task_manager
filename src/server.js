@@ -51,7 +51,7 @@ const PORT = process.env.PORT || 5000;
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-  cors());    console.log("✅ MongoDB connected");
+    console.log("✅ MongoDB connected");
     app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
   })
   .catch((err) => {
