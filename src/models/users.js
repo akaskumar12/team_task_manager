@@ -8,18 +8,6 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["admin", "member"], default: "member" },
 }, { timestamps: true });
 
-// ✅ Use regular function, not arrow function
-userSchema.pre("save", async function(next) {
-  try {
-    if (!this.isModified("password")) return next();
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err); // ✅ pass error to next properly
-  }
-});
-
 userSchema.methods.comparePassword = async function(plain) {
   return await bcrypt.compare(plain, this.password);
 };
