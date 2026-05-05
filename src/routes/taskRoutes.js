@@ -31,6 +31,9 @@ router.get("/", async (req, res, next) => {
 // POST /api/tasks
 router.post("/", async (req, res, next) => {
   try {
+    console.log("req.user:", req.user); // ← add this
+    console.log("req.body:", req.body); // ← add this
+    
     const { title, description, projectId, assignedTo, priority, dueDate, status } = req.body;
 
     if (!title) return res.status(400).json({ error: "Task title is required" });
