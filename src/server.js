@@ -1,27 +1,57 @@
 import express from "express";
-import dotenv from "dotenv";
+import mongoose from "mongoose";
 import cors from "cors";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import projectRoutes from "./routes/projectRoutes.js";
-import taskRoutes from "./routes/taskRoutes.js";
-
+import dotenv from "dotenv";
 dotenv.config();
-connectDB();
+
+import authRoutes from "./routes/auth.js";
+import projectRoutes from "./routes/projects.js";
+import taskRoutes from "./routes/tasks.js";
 
 const app = express();
 
-app.use(cors());
+// ✅ FIX 1: Proper CORS — allows your frontend (any origin during dev, lock it down later)
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(express.json());
 
+// Routes
 app.use("/api/auth", authRoutes);
-
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 
+// Health check — use this to verify Railway deployment is alive
 app.get("/", (req, res) => {
-  res.send("API Running 🚀");
+  res.json({ status: "ok", message: "Team Task Manager API running ✅" });
 });
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+// ✅ FIX 2: Global error handler (required for Express 5 async errors)
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(err.status || 500).json({ error: err.message || "Internal Server Error" });
+});
+
+// ✅ FIX 3: MongoDB URI must include database name
+const MONGO_URI = process.env.MONGO_URI;
+if (!MONGO_URI) {
+  console.error("❌ MONGO_URI is not set in environment variables!");
+  process.exit(1);
+}
+
+// ✅ FIX 4: Always use process.env.PORT for Railway
+const PORT = process.env.PORT || 5000;
+
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+    app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err.message);
+    process.exit(1);
+  });
