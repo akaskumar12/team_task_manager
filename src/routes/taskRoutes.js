@@ -50,16 +50,17 @@ router.post("/", async (req, res, next) => {
 
     if (!hasAccess) return res.status(403).json({ error: "Access denied to this project" });
 
-    const task = await Task.create({
-      title,
-      description,
-      projectId,
-      assignedTo: assignedTo || req.user._id,
-      createdBy: req.user._id,
-      priority: priority || "medium",
-      dueDate,
-      status: status || "todo",
-    });
+  const task = await Task.create({
+  title,
+  description,
+  projectId,
+  // ✅ Check if it's a valid value, not just truthy
+  assignedTo: (assignedTo && assignedTo !== "undefined") ? assignedTo : req.user._id,
+  createdBy: req.user._id,
+  priority: priority || "medium",
+  dueDate,
+  status: status || "todo",
+});
 
     await task.populate("assignedTo", "name email");
     await task.populate("createdBy", "name email");
