@@ -9,7 +9,6 @@ import projectRoutes from "./routes/projectRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
-
 app.use(cors({
   origin: [
     "https://team-task-manager-wpbg.vercel.app",
@@ -19,6 +18,8 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));
+
+app.options("*", cors()); 
 
 
 app.use(express.json());
