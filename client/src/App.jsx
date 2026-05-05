@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API = "https://teamtaskmanager-production-da38.up.railway.app";
+const API = "https://teamtaskmanager-production-0bb8.up.railway.app";
+
 
 const getAxios = () => {
   const token = localStorage.getItem("token");
