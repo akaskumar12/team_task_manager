@@ -2,10 +2,11 @@ import User from "../models/users.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// SIGNUP
 export const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+    
+    console.log("Signup attempt:", { name, email, role }); // ← add this
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -15,13 +16,15 @@ export const signup = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password, // plain password — model will hash it
+      password,
       role
     });
 
+    console.log("User created:", user._id); // ← add this
     res.status(201).json({ message: "User created successfully" });
 
   } catch (err) {
+    console.error("Signup error:", err.message); // ← add this
     res.status(500).json({ error: err.message });
   }
 };
