@@ -33,23 +33,24 @@ function App() {
   const [tasks, setTasks] = useState([]);
 
   // ✅ Auto-login if token exists on page load
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      getAxios()
-        .get("/api/auth/me")
-        .then((res) => {
-          setLoggedIn(true);
-          setCurrentUser(res.data.user);
-          loadProjects();
-          loadTasks();
-        })
-        .catch(() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("userId");
-        });
-    }
-  }, []);
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    getAxios()
+      .get("/api/auth/me")
+      .then((res) => {
+        setLoggedIn(true);
+        setCurrentUser(res.data.user);
+        localStorage.setItem("userId", res.data.user._id);
+        loadProjects();
+        loadTasks();
+      })
+      .catch(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+      });
+  }
+}, []);
 
   const showMessage = (text, type = "success") => {
     setMessage({ text, type });
