@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API = "http://localhost:5000";
+const API = "https://teamtaskmanager-production-da38.up.railway.app/";
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);
