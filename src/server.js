@@ -10,12 +10,16 @@ import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
 
-// ✅ FIX 1: Proper CORS — allows your frontend (any origin during dev, lock it down later)
 app.use(cors({
-  origin: "*",
+  origin: [
+    "https://team-task-manager-wpbg.vercel.app",
+    "http://localhost:5173",
+  ],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
+
 
 app.use(express.json());
 
